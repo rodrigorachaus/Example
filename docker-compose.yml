@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  mariadb:
+    image: mariadb
+    environment:
+      # ALLOW_EMPTY_PASSWORD is recommended only for development.
+      - ALLOW_EMPTY_PASSWORD=yes
+      - MARIADB_USER=${MARIADB_USER}
+      - MARIADB_DATABASE=${MARIADB_DATABASE}
+  myapp:
+    build:
+# Informe o caminho do seu dockerfile    
+      dockerfile: /home/thor/Docker/exemplo/Dockefile
+    container_name: php-laravel
+    ports:
+      - '8000:8000'
+    environment:
+      - DB_HOST=mariadb
+      - DB_PORT=3306
+      - DB_USERNAME=bn_myapp
+      - DB_DATABASE=bitnami_myapp
+# Informe um ou mais volumes para bind do seu projeto      
+    volumes:
+      - './my-project:/app'
+  vuejs:
+    image: docker pull vuejs/ci
+    container_name: Vuejs
+    depends_on:
+      - mariadb
+      - php-laravel
